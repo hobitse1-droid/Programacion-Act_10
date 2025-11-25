@@ -1,1 +1,129 @@
+import java.io.*; // comprime los imports de BufferReader, freader, FWriter, etc
+import java.util.*; // "comprime todos los imports del scanner, list y arraylist"
+import java.util.regex.*;
+
+public class Textointeligente {
+
+    static Scanner sc = new Scanner(System.in); // scanner global
+
+    public static void main(String[] args) {
+        int opcion;
+        do {
+            System.out.println("\n==== MENU PRINCIPAL ====");
+            System.out.println("1. Ingresar y guardar fecha");
+            System.out.println("2. Validar telefono");
+            System.out.println("3. Procesar correos electronicos");
+            System.out.println("4. Salir");
+            System.out.print("Seleccione una opcion: ");
+            opcion = Integer.parseInt(sc.nextLine());
+
+            switch (opcion) {
+                case 1:
+                    manejarFechas();
+                    break;
+                case 2:
+                    validadordenumeros();
+                    break;
+                case 3:
+                    manejarCorreos();
+                    break;
+                case 4:
+                    System.out.println("Saliendo del programa...");
+                    break;
+                default:
+                    System.out.println("Opcion invalida, intente de nuevo.");
+            }
+        } while (opcion != 4);
+
+        sc.close();
+    }
+
+    //funcion guardadito
+    public static void manejarFechas() {
+        String Listadefechastxt = "Lista.txt"; //nombre del archivo que se va a crear 
+        try {
+            PrintWriter pw = new PrintWriter(new FileWriter(Listadefechastxt, true)); 
+            System.out.println("Por favor ingrese la fecha con el formato DD/MM/YYYY");
+            String textoUsuario = sc.nextLine();
+            pw.println(textoUsuario);
+            pw.close(); 
+
+            System.out.println("Historial completo de fechas en: " + Listadefechastxt);
+
+            BufferedReader br = new BufferedReader(new FileReader(Listadefechastxt)); 
+            String lineaDelArchivo; 
+            while ((lineaDelArchivo = br.readLine()) != null) { 
+                List<String> fechas = extraerFechas(lineaDelArchivo);
+                if (!fechas.isEmpty()) {
+                    for (String fecha : fechas) {
+                        System.out.println(" - " + fecha);
+                    }
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage()); 
+        }
+    }
+
+    public static List<String> extraerFechas(String texto) {
+        List<String> listaResultados = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\d{2}/\\d{2}/\\d{4}"); 
+        Matcher matcher = pattern.matcher(texto);
+        while (matcher.find()) {
+            listaResultados.add(matcher.group());
+        }
+        return listaResultados;
+    }
+
+    //verificador de telefono
+    public static void validadordenumeros() {
+        System.out.println("Por favor ingrese un telefono con el formato XXX XXX-XXXX");
+        String telefonoUsuario = sc.nextLine();
+        if (validarTelefono(telefonoUsuario)) {
+            System.out.println("Telefono valido: " + telefonoUsuario);
+        } else {
+            System.out.println("Telefono invalido, no cumple el formato.");
+        }
+    }
+
+    public static boolean validarTelefono(String telefono) {
+        String regex = "\\d{3}\\ \\d{3}-\\d{4}"; 
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(telefono);
+        return matcher.matches(); 
+    }
+
+    //verificacion de correos 
+    public static void manejarCorreos() {
+        System.out.println("Ingrese una lista de correos electronicos separados por comas:");
+        String Correos = sc.nextLine().trim().toLowerCase();
+        String[] listaCorreos = Correos.split(",");
+
+        boolean resultado = procesarCorreos(listaCorreos);
+        if (resultado) {
+            System.out.println("Todos los correos son validos.");
+        } else {
+            System.out.println("Algunos correos no cumplen el formato.");
+        }
+    }
+
+    public static boolean procesarCorreos(String[] correos) {
+        String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"; 
+        Pattern pattern = Pattern.compile(regex);
+        boolean todosValidos = true;
+
+        for (String correo : correos) {
+            correo = correo.trim();
+            Matcher matcher = pattern.matcher(correo);
+            if (matcher.matches()) {
+                System.out.println("Correo valido: " + correo);
+            } else {
+                System.out.println("Correo invalido: " + correo);
+                todosValidos = false;
+            }
+        }
+        return todosValidos;
+    }
+}
 
