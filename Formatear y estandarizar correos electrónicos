@@ -1,1 +1,29 @@
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.Scanner;
 
+
+    static Scanner sc= new Scanner(System.in);
+
+    System.out.println("Ingrese una lista de correos electrónicos separados por comas:");
+    String Correos = sc.nextLine().trim().toLowerCase();
+    String[] listaCorreos = Correos.split(","); //Esto va en el menu do-while
+
+
+              public static bolean procesarCorreos(String [] correos) { // Esto es la función
+
+              
+              String regex = "^[A-Za-z0-9._%+-]+@[A-Za-z]+\\.com";
+              Pattern pattern = Pattern.compile(regex);
+              boolean todosValidos = true;
+              for (String correo : listaCorreos) {
+                  correo = correo.trim();
+                  Matcher matcher = pattern.matcher(correo);
+                  if (matcher.matches()) {
+                      System.out.println(correo + " es un correo válido.");
+                  } else {
+                      System.out.println(correo + " no es un correo válido.");
+                      todosValidos = false;
+                  }
+              return todosValidos;
+              }
