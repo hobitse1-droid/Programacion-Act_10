@@ -27,3 +27,5 @@ import java.util.Scanner;
                   }
               return todosValidos;
               }
+    boolean resultado = validarCorreos(); // en el menu 
+
