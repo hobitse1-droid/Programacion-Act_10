@@ -1,1 +1,63 @@
+import java.io.*; // comprime los imports de BufferReader, freader, FWriter, etc
+import java.util.*; // "comprime todos los imports del scanner, list y arraylist"
+import java.util.regex.*;
 
+public class ExtraerechasTxt {
+
+    public static void main(String[] args) {
+        
+        Scanner sc = new Scanner(System.in);//sirve para captar las info que ingrese el usario
+            String Listadefechastxt = "Lista.txt"; //nombre del archivo que se va a crear 
+
+             try {
+                    //, creación del archivo, despues de probar uno que se borrara por completo, encontre que e append puede agregar al final la informacion al txt sin borrar lo anterior
+                    PrintWriter pw = new PrintWriter(new FileWriter(Listadefechastxt,  true)); //sí el archivo contiene info, de lo contrario no se ejecuta y marca error, no es necesario escribit el append solo con escribir "true" es suficiente 
+
+                    System.out.println("==== Bienvenido al lector de fechas ===");
+                    System.out.println("Por favor ingrese la fecha con el formato DD/MM/YYYY");
+            
+                 // Se lee lo que escribe el usuario
+                 String textoUsuario = sc.nextLine();
+            
+                 // se envia al archivo mediante el pw y el nombre (alias) del archivo creado 
+                 pw.println(textoUsuario);
+                 pw.close(); 
+
+                 System.out.println("Historial completo de fechas en: " + Listadefechastxt);
+
+                 BufferedReader br = new BufferedReader(new FileReader(Listadefechastxt)); //llama a leer el "alias" del archivo creado "Lista.txt"/ bufferrider es la forma + rapida de leer el archivo  
+                 String lineaDelArchivo; //es para leer linea por lienea 
+            
+                 while ((lineaDelArchivo = br.readLine()) != null) { // Miaentras no se haya llegado al final (null)seguira leyendo el archivo hasta que este vacio 
+                
+                 List<String> fechas = extraerFechas(lineaDelArchivo);
+
+                    if (!fechas.isEmpty()) {
+                    for (String fecha : fechas) {
+                            System.out.println(" - " + fecha);
+                        }
+                    }
+                }
+            
+                br.close();
+                sc.close(); 
+
+            } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage()); //es un msnj de error, permite cachar sí es que no se siguen las reglas (un pln B), en este caso detecta sí la variable e. muestra error, lo que ejecutara
+        }
+    }
+
+    public static List<String> extraerFechas(String texto) {
+        List<String> listaResultados = new ArrayList<>();
+        
+        // permite que "filtren" los numeros ingresados en 2 digitos, 2 digitos, 4 digitos siguiendo el patron del YY/MM/AAAA
+        Pattern pattern = Pattern.compile("\\d{2}/\\d{2}/\\d{4}"); //el \\d{} quiere decir los digitos que se permiten, separado por el /
+        Matcher matcher = pattern.matcher(texto);
+        
+        while (matcher.find()) {
+            listaResultados.add(matcher.group());
+        }
+        
+        return listaResultados;
+    }
+}
