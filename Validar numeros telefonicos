@@ -1,1 +1,13 @@
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
+public class ValidadorTelefono {
+
+    public static boolean validarTelefono(String telefono) {
+        String regex = "\\d{3}\\ \\d{3}-\\d{4}"; // verifican e lformato y la forma en que se tiene que acomodar para estar correcto
+        
+        Pattern pattern = Pattern.compile(regex);// compila y busca el formato en que se debe de acomodar
+        Matcher matcher = pattern.matcher(telefono);//comprueba si el formato coincide
+        
+        return matcher.matches();// regresa el matcher si es correcto 
+    }
